@@ -1,5 +1,5 @@
 import { User } from "../../generated/prisma/client";
-import { RegisterUserResponse } from "../model/user-model";
+import { LoginUserResponse, RegisterUserResponse } from "../model/user-model";
 
 export function toRegisterUserResponse(user: User) : RegisterUserResponse {
     return {
@@ -9,5 +9,18 @@ export function toRegisterUserResponse(user: User) : RegisterUserResponse {
         weight: user.weight,
         role: user.role,
         createdAt: user.createdAt
+    }
+}
+
+export function toLoginUserResponse(user: User, token: string) : LoginUserResponse {
+    return {
+        access_token: token,
+        token_type: "Bearer",
+        expired_in: "1d",
+        user: {
+            id: user.id,
+            name: user.name,
+            role: user.role
+        }
     }
 }

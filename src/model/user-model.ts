@@ -16,3 +16,18 @@ export type RegisterUserRequest = {
     password: string
 }
 
+export type LoginUserResponse = {
+    access_token: string,
+    token_type: "Bearer",
+    expired_in: "1d";
+    user: {
+        id: number,
+        name: string,
+        role: Role
+    }
+}
+
+export type LoginUserRequest = {
+    username: string,
+    password: string
+}
