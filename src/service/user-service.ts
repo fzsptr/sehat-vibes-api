@@ -6,7 +6,7 @@ import { hashPassword } from "../utils/bcrypt";
 import { UserValidation } from "../validation/user-validation";
 import { Validation } from "../validation/validation";
 
-export class AuthService {
+export class UserService {
     static async register(request: RegisterUserRequest) : Promise <RegisterUserResponse> {
         const registerRequest = Validation.validate(UserValidation.REGISTER, request)
 
