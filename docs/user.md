@@ -18,7 +18,7 @@ Response Body 200 (OK) :
     "status": "success",
     "message": "Register successfully",
     "data": {
-        "id": 1
+        "id": 1,
         "username": "fzsptr",
         "name": "fauzi",
         "weight": 58.2,
