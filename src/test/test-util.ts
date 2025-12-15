@@ -12,6 +12,7 @@ export class UserTest {
     }
 
     static async create() {
+        await this.delete()
         await prisma.user.create({
             data: {
                 username: "test",
