@@ -19,6 +19,7 @@ export function toLoginUserResponse(user: User, token: string) : LoginUserRespon
         expired_in: "1d",
         user: {
             id: user.id,
+            username: user.username,
             name: user.name,
             role: user.role
         }

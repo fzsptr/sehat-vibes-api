@@ -57,10 +57,11 @@ Response Body 200 (OK) :
         "token_type": "Bearer",
         "expires_in": "1d",
         "user": {
-      "id": 1,
-      "name": "andi",
-      "role": "USER"
-    }
+            "id": 1,
+            "username": "fzsptr",
+            "name": "fauzi",
+            "role": "USER"
+        }
     }
 }
 ```
@@ -94,7 +95,7 @@ Response Body 200 (OK) :
     "status": "success",
     "data": {
         "id": 1,
-        "name": "andi",
+        "name": "fauzi",
         "height": 170.5,
         "weight": 55.2,
         "role": "USER",
@@ -125,7 +126,7 @@ Response Body 200 (OK) :
     "message": "User updated successfully",
     "data": {
         "id": 1,
-        "name": "andi",
+        "name": "fauzi",
         "height": 170.5,
         "weight": 55.2,
         "role": "USER",
