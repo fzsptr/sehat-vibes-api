@@ -109,7 +109,7 @@ Response Body 401 (Unauthorzied):
 ```json
 {   
     "status": "error",
-    "message": "Invalid name or password"
+    "message": "Unauthorized"
 }
 ```
 

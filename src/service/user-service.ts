@@ -1,7 +1,8 @@
+import { User } from "../../generated/prisma/client";
 import { ResponseError } from "../error/response-error";
 import { prisma } from "../lib/database";
-import { toLoginUserResponse, toRegisterUserResponse } from "../mapper/user-mapper";
-import { LoginUserRequest, LoginUserResponse, RegisterUserRequest, RegisterUserResponse } from "../model/user-model";
+import { toLoginUserResponse, toRegisterUserResponse, toUserResponse } from "../mapper/user-mapper";
+import { LoginUserRequest, LoginUserResponse, RegisterUserRequest, RegisterUserResponse, UserResponse } from "../model/user-model";
 import { comparePassword, hashPassword } from "../utils/bcrypt";
 import { generateToken } from "../utils/jwt";
 import { UserValidation } from "../validation/user-validation";
@@ -50,10 +51,24 @@ export class UserService {
 
         const token = generateToken({
             id: user.id,
-            role: user.role,
+            role: user.role
         })
 
         return toLoginUserResponse(user, token)
     
+    }
+
+    static async get(userId: number) : Promise <UserResponse> {
+        const user = await prisma.user.findUnique({
+            where: {
+                id: userId
+            }
+        })
+
+        if(!user) {
+            throw new ResponseError(404, "User not found")
+        }
+
+        return toUserResponse(user)
     }
 }

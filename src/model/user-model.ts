@@ -1,5 +1,12 @@
 import { Role } from "../../generated/prisma/enums"
 
+export type RegisterUserRequest = {
+    username: string,
+    name: string,
+    weight?: number,
+    password: string
+}
+
 export type RegisterUserResponse = {
     id: number,
     username: string,
@@ -9,10 +16,8 @@ export type RegisterUserResponse = {
     createdAt: Date,
 }
 
-export type RegisterUserRequest = {
+export type LoginUserRequest = {
     username: string,
-    name: string,
-    weight?: number,
     password: string
 }
 
@@ -28,7 +33,11 @@ export type LoginUserResponse = {
     }
 }
 
-export type LoginUserRequest = {
-    username: string,
-    password: string
+export type UserResponse = {
+    id: number,
+    name: string,
+    weight: number | null,
+    role: Role,
+    createdAt: Date,
+    updatedAt: Date
 }

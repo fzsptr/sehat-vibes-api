@@ -1,6 +1,8 @@
 import { Request, Response,NextFunction } from "express";
 import { LoginUserRequest, RegisterUserRequest } from "../model/user-model";
 import { UserService } from "../service/user-service";
+import { AuthRequest } from "../middleware/auth-middleware";
+import { ResponseError } from "../error/response-error";
 
 export class UserController {
 
@@ -27,6 +29,22 @@ export class UserController {
             res.status(200).json({
                 status: "success",
                 message: "Login Successfully",
+                data: response
+            })
+        } catch(e) {
+            next(e)
+        }
+    }
+
+    static async get(req: AuthRequest, res: Response, next: NextFunction) {
+        try {
+            if (!req.user) {
+                throw new ResponseError(401, "Unauthorized")
+            }
+            const response = await UserService.get(req.user.id)
+            
+            res.status(200).json({
+                status: "success",
                 data: response
             })
         } catch(e) {
