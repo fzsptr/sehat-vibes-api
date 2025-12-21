@@ -4,7 +4,7 @@ import { verifyToken } from "../utils/jwt";
 import { JwtPayload } from "../types/auth";
 
 export interface AuthRequest extends Request {
-    user?: JwtPayload
+    user: JwtPayload
 }
 
 export const authMiddleware = ( req: AuthRequest, res: Response, next: NextFunction) => {

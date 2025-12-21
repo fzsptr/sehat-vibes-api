@@ -38,9 +38,6 @@ export class UserController {
 
     static async get(req: AuthRequest, res: Response, next: NextFunction) {
         try {
-            if (!req.user) {
-                throw new ResponseError(401, "Unauthorized")
-            }
             const response = await UserService.get(req.user.id)
             
             res.status(200).json({
