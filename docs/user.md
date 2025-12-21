@@ -119,6 +119,12 @@ Endpoint: PATCH /users/current
 Request Header:
 - Authorization: Bearer <JWT_TOKEN>
 
+Request Body :
+```json
+    "name": "fauzi",
+    "weight": "60"
+```
+
 Response Body 200 (OK) :
 ```json
 {

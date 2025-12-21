@@ -1,13 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { ResponseError } from "../error/response-error";
 import { verifyToken } from "../utils/jwt";
-import { JwtPayload } from "../types/auth";
 
-export interface AuthRequest extends Request {
-    user: JwtPayload
-}
-
-export const authMiddleware = ( req: AuthRequest, res: Response, next: NextFunction) => {
+export const authMiddleware = ( req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization
     if (!authHeader) {
         throw new ResponseError(401, "Unauthorized")
