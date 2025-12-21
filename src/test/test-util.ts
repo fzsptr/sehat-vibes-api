@@ -1,3 +1,4 @@
+import { User } from "../../generated/prisma/client";
 import { Role } from "../../generated/prisma/enums";
 import { prisma } from "../lib/database";
 import { hashPassword } from "../utils/bcrypt";
@@ -13,7 +14,7 @@ export class UserTest {
         })
     }
 
-    static async create() {
+    static async create()  {
         await this.delete()
         return prisma.user.create({
             data: {
@@ -33,5 +34,19 @@ export class UserTest {
             id: user.id,
             role: Role.USER
         })
+    }
+
+    static async get() : Promise <User>{
+        const user =  await prisma.user.findFirst({
+            where: {
+                username: "test"
+            }
+        })
+
+        if(!user) {
+            throw new Error("User not found")
+        }
+        
+        return user
     }
 }

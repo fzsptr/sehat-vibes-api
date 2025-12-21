@@ -1,8 +1,7 @@
-import { User } from "../../generated/prisma/client";
 import { ResponseError } from "../error/response-error";
 import { prisma } from "../lib/database";
 import { toLoginUserResponse, toRegisterUserResponse, toUserResponse } from "../mapper/user-mapper";
-import { LoginUserRequest, LoginUserResponse, RegisterUserRequest, RegisterUserResponse, UserResponse } from "../model/user-model";
+import { LoginUserRequest, LoginUserResponse, RegisterUserRequest, RegisterUserResponse, UpdateUserRequest, UserResponse } from "../model/user-model";
 import { comparePassword, hashPassword } from "../utils/bcrypt";
 import { generateToken } from "../utils/jwt";
 import { UserValidation } from "../validation/user-validation";
@@ -70,5 +69,25 @@ export class UserService {
         }
 
         return toUserResponse(user)
+    }
+
+    static async update(userId: number, request: UpdateUserRequest) : Promise <UserResponse> {
+        const updateRequest = Validation.validate(UserValidation.UPDATE, request)
+
+        if(updateRequest.name === undefined) {
+            throw new ResponseError(400, "No data to update")
+        }
+
+        const updateUser = await prisma.user.update({
+            where: {
+                id: userId
+            },
+            data: {
+                name: updateRequest.name,
+                weight: updateRequest.weight
+            }
+        })
+
+        return toUserResponse(updateUser)
     }
 }

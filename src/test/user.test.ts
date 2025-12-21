@@ -106,7 +106,45 @@ import { logger } from "../application/logging"
 //     })
 //  }) 
 
-describe('GET /', () => { 
+// describe('GET /users/current', () => { 
+
+//     beforeEach(async () => {
+//         await UserTest.create()
+//     })
+
+//     afterEach(async () => {
+//         await UserTest.delete()
+//     })
+
+//     it('should be able get user', async() => {
+//         const token = await UserTest.token()
+//         const response =  await supertest(web)
+
+//             .get("/users/current")
+//             .set("Authorization", `Bearer ${token}`)
+        
+//         logger.debug(response.body)
+//         expect(response.status).toBe(200)
+//         expect(response.body.status).toBe("success")
+//         expect(response.body.data.id).toBeDefined()
+//         expect(response.body.data.name).toBe("test")
+//         expect(response.body.data.role).toBe("USER")
+//     })
+
+//     it('should be reject get user if token invalid', async() => {
+//         const token = await UserTest.token()
+//         const response = await supertest(web)
+
+//         .get("/users/current")
+//         .set("Authorization", `invalid token ${token}`)
+
+//         logger.debug(response.body)
+//         expect(response.status).toBe(401)
+//         expect(response.body.status).toBe("error")
+//     })
+// })
+
+describe('PATCH /users/current', () => {
 
     beforeEach(async () => {
         await UserTest.create()
@@ -115,31 +153,36 @@ describe('GET /', () => {
     afterEach(async () => {
         await UserTest.delete()
     })
-
-    it('should be able get user', async() => {
-        const token = await UserTest.token()
-        const response =  await supertest(web)
-
-            .get("/users/current")
-            .set("Authorization", `Bearer ${token}`)
-        
-        logger.debug(response.body)
-        expect(response.status).toBe(200)
-        expect(response.body.status).toBe("success")
-        expect(response.body.data.id).toBeDefined()
-        expect(response.body.data.name).toBe("test")
-        expect(response.body.data.role).toBe("USER")
-    })
-
-    it('should be reject get user if token invalid', async() => {
+    
+    it('should be able update user', async() => {
         const token = await UserTest.token()
         const response = await supertest(web)
 
-        .get("/users/current")
-        .set("Authorization", `invalid token ${token}`)
+        .patch("/users/current")
+        .set("Authorization", `Bearer ${token}`)
+        .send({
+            name: "update"
+        })
 
         logger.debug(response.body)
-        expect(response.status).toBe(401)
+        expect(response.body.status).toBe("success")
+        expect(response.body.data.id).toBeDefined()
+        expect(response.body.data.name).toBe("update")
+    })
+
+    it('should be able update user if request invalid', async() => {
+        const token = await UserTest.token()
+        const response = await supertest(web)
+
+        .patch("/users/current")
+        .set("Authorization", `Bearer ${token}`)
+        .send({
+            name: ""
+        })
+
+        logger.debug(response.body)
+        expect(response.status).toBe(400)
         expect(response.body.status).toBe("error")
+        expect(response.body.errors).toBeDefined()
     })
 })

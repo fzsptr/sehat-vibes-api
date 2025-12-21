@@ -3,4 +3,7 @@ import { UserController } from "../controller/user-controller"
 import { authMiddleware } from "../middleware/auth-middleware"
 
 export const apiRouter = express.Router()
-apiRouter.get("/users/current", authMiddleware ,UserController.get)
+
+// User API
+apiRouter.get("/users/current", authMiddleware, UserController.get)
+apiRouter.patch("/users/current", authMiddleware, UserController.update)

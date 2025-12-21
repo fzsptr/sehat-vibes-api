@@ -29,6 +29,7 @@ export function toLoginUserResponse(user: User, token: string) : LoginUserRespon
 export function toUserResponse(user: User) : UserResponse {
     return {
         id: user.id,
+        username: user.username,
         name: user.name,
         weight: user.weight,
         role: user.role,

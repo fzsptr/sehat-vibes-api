@@ -33,8 +33,14 @@ export type LoginUserResponse = {
     }
 }
 
+export type UpdateUserRequest = {
+    name?: string,
+    weight?: number
+}
+
 export type UserResponse = {
     id: number,
+    username: string,
     name: string,
     weight: number | null,
     role: Role,
