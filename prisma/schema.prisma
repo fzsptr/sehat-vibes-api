@@ -23,8 +23,25 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  workouts Workout[]
+
   @@map("users")
 }
+
+model Workout {
+  id Int @id @default(autoincrement())
+  userId Int
+  title String @db.VarChar(100)
+  calories Int
+  duration Int
+  ytUrl String? @db.VarChar(100)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("workouts")
+}
+
 
 enum Role {
   USER

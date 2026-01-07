@@ -50,3 +50,27 @@ export class UserTest {
         return user
     }
 }
+
+export class WorkoutTest {
+
+    static async delete() {
+        await prisma.workout.deleteMany({
+            where: {
+                userId: 1
+            }
+        })
+    }
+
+    static async create() {
+        await this.delete()
+        return prisma.workout.create({
+            data: {
+                userId: 1,
+                title: "test",
+                calories: 100,
+                duration: 10,
+                ytUrl: "test"
+            }     
+        })
+    }
+}

@@ -1,15 +1,15 @@
-# User API Spec
+# Workout API Spec
 
-## Register User
+## Create Workout
 Endpoint: POST /auth/register
 
 Request Body: 
 ```json
 {
-    "username": "fzsptr",
-    "name": "fauzi",
-    "password": "rahasia",
-    "weight": 58.5
+    "title": "Push Up",
+    "calories": 100,
+    "duration": 10,
+    "ytUrl": "https://www.youtube.com/..."
 }
 ```
 Response Body 200 (OK) :
@@ -19,11 +19,11 @@ Response Body 200 (OK) :
     "message": "Register successfully",
     "data": {
         "id": 1,
-        "username": "fzsptr",
-        "name": "fauzi",
-        "weight": 58.2,
-        "role": "USER",
-        "createdAt": "2025-12-13T10:00:00.000Z"
+        "title": "Push Up",
+        "calories": 100,
+        "duration": 10,
+        "ytUrl": "https://www.youtube.com/...",
+        "createdAt": "2025-12-13"
     }
 }
 ```
@@ -36,7 +36,7 @@ Response Body 400 (Bad Request):
 }
 ```
 
-## Login User
+## Get Workout
 Endpoint: POST /auth/login
 
 Request Body:
