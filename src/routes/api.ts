@@ -11,3 +11,4 @@ apiRouter.patch("/users/current", authMiddleware, UserController.update)
 
 // Workout API
 apiRouter.post("/workouts/history", authMiddleware, WorkoutController.create)
+apiRouter.get("/workouts/history/today", authMiddleware, WorkoutController.getToday)

@@ -1,6 +1,6 @@
 import { prisma } from "../lib/database";
 import { toWorkoutResponse } from "../mapper/workout-mapper";
-import { CreateWorkoutRequest, WorkoutResponse } from "../model/workout-mode";
+import { CreateWorkoutRequest, WorkoutResponse, WorkoutTodayResponse } from "../model/workout-mode";
 import { Validation } from "../validation/validation";
 import { WorkoutValidation } from "../validation/workout-validation";
 
@@ -20,6 +20,35 @@ export class WorkoutService {
         })
 
         return toWorkoutResponse(workout)
+    }
+
+    static async getToday(userId: number) : Promise <WorkoutTodayResponse> {
+        const start = new Date()
+        start.setUTCHours(0, 0, 0, 0)
+
+        const end = new Date()
+        end.setUTCHours(23, 59, 59, 999)
+
+        const workouts = await prisma.workout.findMany({
+            where: {
+                userId,
+                createdAt: {
+                    gte: start,
+                    lte: end
+                }
+            },
+            orderBy: {
+                createdAt: "desc"
+            }
+        })
+
+        return {
+            date: start.toISOString().split("T")[0],
+            totalWorkout: workouts.length,
+            totalCalories: workouts.reduce((sum, w) => sum + w.calories, 0),
+            totalDuration: workouts.reduce((sum, w) => sum + w.duration, 0),
+            workouts: workouts.map(toWorkoutResponse)
+        }
     }
     
 }

@@ -6,16 +6,15 @@ import { generateToken } from "../utils/jwt";
 
 export class UserTest {
 
-    static async delete() {
+    static async delete(id: number) {
         await prisma.user.deleteMany({
             where: {
-                username: "test"
+                id
             }
         })
     }
 
-    static async create()  {
-        await this.delete()
+    static async create() : Promise <User> {
         return prisma.user.create({
             data: {
                 username: "test",
@@ -27,9 +26,8 @@ export class UserTest {
         })
     }
 
-    static async token() {
-        const user = await this.create()
-
+    static async token() : Promise <string> {
+        const user = await UserTest.create()
         return generateToken({
             id: user.id,
             role: Role.USER
@@ -53,24 +51,48 @@ export class UserTest {
 
 export class WorkoutTest {
 
-    static async delete() {
+    static async deleteByUser(userId: number) {
         await prisma.workout.deleteMany({
             where: {
-                userId: 1
+                userId
             }
         })
     }
 
-    static async create() {
-        await this.delete()
+    static async createToday(userId: number) {
+        const today = new Date()
+        today.setUTCHours(5, 0, 0, 0)
         return prisma.workout.create({
             data: {
-                userId: 1,
-                title: "test",
+                userId,
+                title: "Push Up",
                 calories: 100,
                 duration: 10,
-                ytUrl: "test"
+                ytUrl: "test",
+                createdAt: today
             }     
         })
+    }
+
+    static async createYesteday(userId: number) {
+        const yesterday = new Date()
+        yesterday.setUTCDate(yesterday.getUTCDate() - 1)
+        yesterday.setUTCHours(5, 0, 0, 0)
+
+        return prisma.workout.create({
+            data: {
+                userId,
+                title: "Plank",
+                calories: 200,
+                duration: 20,
+                ytUrl: null,
+                createdAt: yesterday
+            }
+        })
+    }
+
+    static async createFixtures(userId: number) {
+        await this.createToday(userId)
+        await this.createYesteday(userId)
     }
 }

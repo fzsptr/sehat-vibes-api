@@ -13,3 +13,11 @@ export type WorkoutResponse = {
     ytUrl?: string | null
     createdAt: Date
 }
+
+export type WorkoutTodayResponse = {
+    date: string
+    totalWorkout: number
+    totalCalories: number
+    totalDuration: number
+    workouts: WorkoutResponse[]
+}

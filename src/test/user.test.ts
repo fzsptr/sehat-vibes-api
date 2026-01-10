@@ -2,11 +2,20 @@ import supertest from "supertest"
 import { web } from "../application/web"
 import { UserTest } from "./test-util"
 import { logger } from "../application/logging"
+import { prisma } from "../lib/database"
 
 // describe('POST /auth/register', () => {
-
+    
 //     afterEach(async () => {
-//         await UserTest.delete()
+//         const user = await prisma.user.findFirst({
+//             where: {
+//                 username: "test"
+//             }
+//         })
+
+//         if(user) {
+//             awaitloh bukannya menjadi pada before UserTest.delete(user.id)
+//         }
 //     })
 
 //     it('should be able register', async() => {
@@ -45,105 +54,131 @@ import { logger } from "../application/logging"
 //     })
 // })
 
-// describe('POST /auth/login', () => {
+describe('POST /auth/login', () => {
 
-//     beforeEach( async () => 
-//         await UserTest.create()
-//     )
+    beforeEach( async () => 
+        await UserTest.create()
+    )
 
-//     afterEach( async () => {
-//         await UserTest.delete()
-//     })
+    afterEach( async () => {
+        const user = await prisma.user.findFirst({
+            where: {
+                username: "test"
+            }
+        })
 
-//     it('should be able login', async() => {
-//         const response = await supertest(web)
+        if(user) {
+            await UserTest.delete(user.id)
+        }
+    })
 
-//         .post("/auth/login")
-//         .send({
-//             username: "test",
-//             password: "rahasia"
-//         })
+    it('should be able login', async() => {
+        const response = await supertest(web)
 
-//         logger.debug(response.body)
-//         expect(response.status).toBe(200)
-//         expect(response.body.status).toBe("success")
-//         expect(response.body.data.access_token).toBeDefined()
-//         expect(response.body.data.token_type).toBe("Bearer")
-//         expect(response.body.data.user.id).toBeDefined()
-//         expect(response.body.data.user.username).toBe("test")
-//         expect(response.body.data.user.name).toBe("test")
-//         expect(response.body.data.user.role).toBe("USER")
-//     })
+        .post("/auth/login")
+        .send({
+            username: "test",
+            password: "rahasia"
+        })
 
-//     it("should reject login if user or password wrong", async() => {
-//         const response = await supertest(web)
+        logger.debug(response.body)
+        expect(response.status).toBe(200)
+        expect(response.body.status).toBe("success")
+        expect(response.body.data.access_token).toBeDefined()
+        expect(response.body.data.token_type).toBe("Bearer")
+        expect(response.body.data.user.id).toBeDefined()
+        expect(response.body.data.user.username).toBe("test")
+        expect(response.body.data.user.name).toBe("test")
+        expect(response.body.data.user.role).toBe("USER")
+    })
 
-//         .post("/auth/login")
-//         .send({
-//             username: "salah",
-//             password: "rahasia"
-//         })
+    it("should reject login if user or password wrong", async() => {
+        const response = await supertest(web)
 
-//         logger.debug(response.body)
-//         expect(response.status).toBe(401)
-//         expect(response.body.status).toBe("error")
-//         expect(response.body.errors).toBeDefined()
-//     })
+        .post("/auth/login")
+        .send({
+            username: "salah",
+            password: "rahasia"
+        })
 
-//     it("should reject login if validation error", async() => {
-//         const response = await supertest(web)
+        logger.debug(response.body)
+        expect(response.status).toBe(401)
+        expect(response.body.status).toBe("error")
+        expect(response.body.errors).toBeDefined()
+    })
 
-//         .post("/auth/login")
-//         .send({
-//             username: "",
-//             password: ""
-//         })
+    it("should reject login if validation error", async() => {
+        const response = await supertest(web)
 
-//         logger.debug(response.body)
-//         expect(response.status).toBe(400)
-//         expect(response.body.status).toBe("error")
-//         expect(response.body.errors).toBeDefined()
-//     })
-// }) 
+        .post("/auth/login")
+        .send({
+            username: "",
+            password: ""
+        })
 
-// describe('GET /users/current', () => { 
+        logger.debug(response.body)
+        expect(response.status).toBe(400)
+        expect(response.body.status).toBe("error")
+        expect(response.body.errors).toBeDefined()
+    })
+}) 
 
-//     afterEach(async () => {
-//         await UserTest.delete()
-//     })
+describe('GET /users/current', () => { 
 
-//     it('should be able get user', async() => {
-//         const token = await UserTest.token()
-//         const response =  await supertest(web)
+    afterEach(async () => {
+        const user = await prisma.user.findFirst({
+            where: {
+                username: "test"
+            }
+        })
 
-//             .get("/users/current")
-//             .set("Authorization", `Bearer ${token}`)
+        if(user) {
+            await UserTest.delete(user.id)
+        }
         
-//         logger.debug(response.body)
-//         expect(response.status).toBe(200)
-//         expect(response.body.status).toBe("success")
-//         expect(response.body.data.id).toBeDefined()
-//         expect(response.body.data.name).toBe("test")
-//         expect(response.body.data.role).toBe("USER")
-//     })
+    })
 
-//     it('should be reject get user if token invalid', async() => {
-//         const token = await UserTest.token()
-//         const response = await supertest(web)
+    it('should be able get user', async() => {
+        const token = await UserTest.token()
+        const response =  await supertest(web)
 
-//         .get("/users/current")
-//         .set("Authorization", `invalid token ${token}`)
+            .get("/users/current")
+            .set("Authorization", `Bearer ${token}`)
+        
+        logger.debug(response.body)
+        expect(response.status).toBe(200)
+        expect(response.body.status).toBe("success")
+        expect(response.body.data.id).toBeDefined()
+        expect(response.body.data.name).toBe("test")
+        expect(response.body.data.role).toBe("USER")
+    })
 
-//         logger.debug(response.body)
-//         expect(response.status).toBe(401)
-//         expect(response.body.status).toBe("error")
-//     })
-// })
+    it('should be reject get user if token invalid', async() => {
+        const token = await UserTest.token()
+        const response = await supertest(web)
+
+        .get("/users/current")
+        .set("Authorization", `invalid token ${token}`)
+
+        logger.debug(response.body)
+        expect(response.status).toBe(401)
+        expect(response.body.status).toBe("error")
+        expect(response.body.errors).toBeDefined()
+    })
+})
 
 describe('PATCH /users/current', () => {
 
     afterEach(async () => {
-        await UserTest.delete()
+        const user = await prisma.user.findFirst({
+            where: {
+                username: "test"
+            }
+        })
+
+        if(user) {
+            await UserTest.delete(user.id)
+        }
     })
     
     it('should be able update user', async() => {

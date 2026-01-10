@@ -16,4 +16,16 @@ export class WorkoutController {
             next(e)
         }
     }
+
+    static async getToday(req: Request, res: Response, next: NextFunction) {
+        try {
+            const response = await WorkoutService.getToday(req.user!.id)
+            res.status(200).json({
+                status: "success",
+                data: response
+            })
+        } catch (e) {
+            next(e)
+        }
+    }
 }
