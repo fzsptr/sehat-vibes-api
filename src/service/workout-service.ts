@@ -22,6 +22,20 @@ export class WorkoutService {
         return toWorkoutResponse(workout)
     }
 
+    static async get(userId: number) : Promise <WorkoutResponse[]> {
+
+        const workouts = await prisma.workout.findMany({
+            where: {
+                userId
+            },
+            orderBy: {
+                createdAt: "desc"
+            }
+        })
+
+        return workouts.map(toWorkoutResponse)
+    }
+
     static async getToday(userId: number) : Promise <WorkoutTodayResponse> {
         const start = new Date()
         start.setUTCHours(0, 0, 0, 0)

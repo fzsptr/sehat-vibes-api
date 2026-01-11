@@ -1,4 +1,5 @@
-import { User } from "../../generated/prisma/client";
+import { userInfo } from "node:os";
+import { User, Workout } from "../../generated/prisma/client";
 import { Role } from "../../generated/prisma/enums";
 import { prisma } from "../lib/database";
 import { hashPassword } from "../utils/bcrypt";
@@ -14,7 +15,7 @@ export class UserTest {
         })
     }
 
-    static async create() : Promise <User> {
+    static async create(): Promise<User> {
         return prisma.user.create({
             data: {
                 username: "test",
@@ -26,7 +27,7 @@ export class UserTest {
         })
     }
 
-    static async token() : Promise <string> {
+    static async token(): Promise<string> {
         const user = await UserTest.create()
         return generateToken({
             id: user.id,
@@ -34,17 +35,17 @@ export class UserTest {
         })
     }
 
-    static async get() : Promise <User>{
-        const user =  await prisma.user.findFirst({
+    static async get(): Promise<User> {
+        const user = await prisma.user.findFirst({
             where: {
                 username: "test"
             }
         })
 
-        if(!user) {
+        if (!user) {
             throw new Error("User not found")
         }
-        
+
         return user
     }
 }
@@ -55,6 +56,19 @@ export class WorkoutTest {
         await prisma.workout.deleteMany({
             where: {
                 userId
+            }
+        })
+    }
+
+    static async create(userId: number) : Promise <Workout> {
+        return prisma.workout.create({
+            data: {
+                userId,
+                title: "Sit Up",
+                calories: 80,
+                duration: 30,
+                ytUrl: "test",
+                createdAt: new Date()
             }
         })
     }
@@ -70,7 +84,7 @@ export class WorkoutTest {
                 duration: 10,
                 ytUrl: "test",
                 createdAt: today
-            }     
+            }
         })
     }
 

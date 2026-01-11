@@ -1,189 +1,162 @@
 # Workout API Spec
 
 ## Create Workout
+
 Endpoint: POST /auth/register
 
-Request Body: 
+Request Header:
+
+- Authorization: Bearer <JWT_TOKEN>
+
+Request Body:
+
 ```json
 {
-    "title": "Push Up",
-    "calories": 100,
-    "duration": 10,
-    "ytUrl": "https://www.youtube.com/..."
+  "title": "Push Up",
+  "calories": 100,
+  "duration": 30,
+  "ytUrl": "https://www.youtube.com/..."
 }
 ```
+
 Response Body 200 (OK) :
+
 ```json
-{   
-    "status": "success",
-    "message": "Register successfully",
-    "data": {
+{
+  "status": "success",
+  "data": {
+    "id": 1,
+    "title": "Push Up",
+    "calories": 100,
+    "duration": 30,
+    "ytUrl": "https://www.youtube.com/...",
+    "createdAt": "2025-12-13"
+  }
+}
+```
+
+Response Body 400 (Bad Request):
+
+```json
+{
+  "status": "error",
+  "message": "workout data fail create"
+}
+```
+
+## Get Workout Today
+
+Endpoint: GET /workouts/history/today
+
+Request Header:
+
+- Authorization: Bearer <JWT_TOKEN>
+
+Response Body 200 (OK) :
+
+```json
+{
+  "status": "success",
+  "data": {
+    "totalWorkout": 15,
+    "totalCalories": 1500,
+    "totalDuration": 1800,
+    "workouts": [
+      {
         "id": 1,
         "title": "Push Up",
         "calories": 100,
-        "duration": 10,
-        "ytUrl": "https://www.youtube.com/...",
-        "createdAt": "2025-12-13"
-    }
+        "duration": 30,
+        "createdAt": "2026-01-10T05:00:00.000Z",
+        "ytUrl": "https//www.youtube.com"
+      }
+    ]
+  }
 }
 ```
 
-Response Body 400 (Bad Request):
+Response Body 401 (Unauthorized):
+
 ```json
 {
-    "status": "error",
-    "message": "username must not blank"
+  "status": "error",
+  "message": "Unauthorized"
 }
 ```
 
-## Get Workout
-Endpoint: POST /auth/login
+## Get Workout History
 
-Request Body:
-```json
-{
-    "username": "fzsptr",
-    "password": "rahasia"
-}
-```
-
-Response Body 200 (OK) :
-```json
-{   
-    "status": "success",
-    "message": "Login succesfully",
-    "data": {
-        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-        "token_type": "Bearer",
-        "expires_in": "1d",
-        "user": {
-            "id": 1,
-            "username": "fzsptr",
-            "name": "fauzi",
-            "role": "USER"
-        }
-    }
-}
-```
-
-Response Body 400 (Bad Request):
-```json
-{   
-    "status": "error",
-    "message": "username or password wrong"
-}
-```
-
-Response Body 401 (Unauthorzied):
-```json
-{   
-    "status": "error",
-    "message": "Invalid name or password"
-}
-```
-
-## Get User
-
-Endpoint: GET /users/current
+Endpoint: GET /workouts/history
 
 Request Header:
+
 - Authorization: Bearer <JWT_TOKEN>
 
 Response Body 200 (OK) :
+
 ```json
 {
-    "status": "success",
-    "data": {
-        "id": 1,
-        "name": "fauzi",
-        "height": 170.5,
-        "weight": 55.2,
-        "role": "USER",
-        "createdAt": "2025-12-13T10:00:00.000Z",
-        "updatedAt": "2025-12-13T11:30:00.000Z"
-    }
+  "status": "success",
+  "data": [
+    {
+      "id": 1,
+      "title": "Sit Up",
+      "calories": 120,
+      "duration": 30,
+      "createdAt": "2026-01-10T05:00:00.000Z",
+      "ytUrl": "https//www.youtube.com"
+    },
+    {
+      "id": 2,
+      "title": "Push Up",
+      "calories": 120,
+      "duration": 30,
+      "createdAt": "2026-01-10T05:00:00.000Z",
+      "ytUrl": "https//www.youtube.com"
+    },
+  ]
 }
 ```
 
-Response Body 401 (Unauthorzied):
+Response Body 401 (Unauthorized):
+
 ```json
-{   
-    "status": "error",
-    "message": "Unauthorized"
+{
+  "status": "error",
+  "message": "Unauthorized"
 }
 ```
 
-## Update User
-Endpoint: PATCH /users/current
+## Get Workout All
+
+Endpoint: GET /workouts/history/statistics
 
 Request Header:
+
 - Authorization: Bearer <JWT_TOKEN>
 
-Request Body :
+Response Body 200 (OK) :
+
 ```json
+{
+  "status": "success",
+  "data": {
+    "id": 1,
     "name": "fauzi",
-    "weight": "60"
-```
-
-Response Body 200 (OK) :
-```json
-{
-    "status": "success",
-    "message": "User updated successfully",
-    "data": {
-        "id": 1,
-        "name": "fauzi",
-        "height": 170.5,
-        "weight": 55.2,
-        "role": "USER",
-        "updatedAt": "2025-12-13T11:30:00.000Z"
-    }
-}
-```
-
-Response Body 400 (Bad Request):
-```json
-{   
-    "status": "error",
-    "message": "Invalid weight"
+    "height": 170.5,
+    "weight": 55.2,
+    "role": "USER",
+    "createdAt": "2025-12-13T10:00:00.000Z",
+    "updatedAt": "2025-12-13T11:30:00.000Z"
+  }
 }
 ```
 
 Response Body 401 (Unauthorzied):
-```json
-{   
-    "status": "error",
-    "message": "Unauthorized"
-}
-```
 
-## Delete User
-
-Endpoint: DELETE /users/:id
-
-Request Header:
-- Authorization: Bearer <JWT_TOKEN>
-
-Response Body 200 (OK)
 ```json
 {
-    "status": "success",
-    "message": "User deleted successfully"
-}
-```
-
-Response Body 403 (Forbidden)
-```json
-{
-    "status": "error",
-    "message": "Forbidden: Admin access required"
-}
-```
-
-Response Body 404 (Not Found)
-```json
-{
-    "status": "error",
-    "message": "User not found"
+  "status": "error",
+  "message": "Unauthorized"
 }
 ```

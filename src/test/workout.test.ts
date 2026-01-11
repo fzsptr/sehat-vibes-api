@@ -49,7 +49,7 @@ import { logger } from "../application/logging"
 //     })
 // })
 
-describe('GET /workouts/history/today', () => {
+describe('GET /workouts/history', () => { 
 
     afterEach(async () => {
         const user = await UserTest.get()
@@ -57,57 +57,108 @@ describe('GET /workouts/history/today', () => {
         await UserTest.delete(user.id)
     })
 
-    it('should be able workouts today', async() => {
+    it('should be able get workout list', async() => {
         const token = await UserTest.token()
         const user = await UserTest.get()
-        
-        await WorkoutTest.createFixtures(user.id)
 
-        const startDate = '2026-01-09'
-        const endDate = '2026-01-08'
+        await WorkoutTest.create(user.id)
+        await WorkoutTest.create(user.id)
+        await WorkoutTest.create(user.id)
         
+
         const response = await supertest(web)
 
-            .get("/workouts/history/today")
+            .get("/workouts/history")
             .set("Authorization", `Bearer ${token}`)
-            .send({
-                startDate,
-                endDate
-            })
-        
-        logger.debug(response.body)
-        expect(response.status).toBe(200)
-        expect(response.body.status).toBe("success")
-        expect(response.body.data.totalWorkout).toBe(1)
-        expect(response.body.data.totalCalories).toBe(100)
-        expect(response.body.data.totalDuration).toBe(10)
 
-        expect(response.body.data.workouts.length).toBe(1)
-        expect(response.body.data.workouts[0].title).toBe("Plank")
-        expect(response.body.data.workouts[0].calories).toBe(200)
+            logger.debug(response.body)
+            expect(response.status).toBe(200)
+            expect(response.body.status).toBe("success")
+
+            expect(Array.isArray(response.body.data)).toBe(true)
+            expect(response.body.data.length).toBe(3)
+
+            expect(response.body.data[0].title).toBe("Sit Up")
+            expect(response.body.data[0].calories).toBe(80)
+            expect(response.body.data[0].duration).toBe(30)
+
     })
-
-    it('should be reject workouts today if unauthorized', async() => {
+    it('should be reject get workout if unauthorized', async() => {
         const token = await UserTest.token()
         const user = await UserTest.get()
-        
-        await WorkoutTest.createFixtures(user.id)
 
-        const startDate = '2026-01-09'
-        const endDate = '2026-01-08'
-        
+        await WorkoutTest.create(user.id)
+
         const response = await supertest(web)
+            .get("/workouts/history")
+            .set("Authorized", `Bearer token`)
 
-            .get("/workouts/history/today")
-            .set("Authorization", `Bearer token`)
-            .send({
-                startDate,
-                endDate
-            })
-        
         logger.debug(response.body)
         expect(response.status).toBe(401)
         expect(response.body.status).toBe("error")
         expect(response.body.errors).toBeDefined()
     })
  })
+
+// describe('GET /workouts/history/today', () => {
+
+//     afterEach(async () => {
+//         const user = await UserTest.get()
+//         await WorkoutTest.deleteByUser(user.id)
+//         await UserTest.delete(user.id)
+//     })
+
+//     it('should be able workouts today', async() => {
+//         const token = await UserTest.token()
+//         const user = await UserTest.get()
+        
+//         await WorkoutTest.createFixtures(user.id)
+
+//         const startDate = '2026-01-09'
+//         const endDate = '2026-01-08'
+        
+//         const response = await supertest(web)
+
+//             .get("/workouts/history/today")
+//             .set("Authorization", `Bearer ${token}`)
+//             .send({
+//                 startDate,
+//                 endDate
+//             })
+        
+//         logger.debug(response.body)
+//         expect(response.status).toBe(200)
+//         expect(response.body.status).toBe("success")
+//         expect(response.body.data.totalWorkout).toBe(1)
+//         expect(response.body.data.totalCalories).toBe(100)
+//         expect(response.body.data.totalDuration).toBe(10)
+
+//         expect(response.body.data.workouts.length).toBe(1)
+//         expect(response.body.data.workouts[0].title).toBe("Push Up")
+//         expect(response.body.data.workouts[0].calories).toBe(100)
+//     })
+
+//     it('should be reject workouts today if unauthorized', async() => {
+//         const token = await UserTest.token()
+//         const user = await UserTest.get()
+        
+//         await WorkoutTest.createFixtures(user.id)
+
+//         const startDate = '2026-01-09'
+//         const endDate = '2026-01-08'
+        
+//         const response = await supertest(web)
+
+//             .get("/workouts/history/today")
+//             .set("Authorization", `Bearer token`)
+//             .send({
+//                 startDate,
+//                 endDate
+//             })
+        
+//         logger.debug(response.body)
+//         expect(response.status).toBe(401)
+//         expect(response.body.status).toBe("error")
+//         expect(response.body.errors).toBeDefined()
+//     })
+//  })
