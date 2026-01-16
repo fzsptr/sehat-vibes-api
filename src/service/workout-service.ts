@@ -1,6 +1,7 @@
+import { User } from "../../generated/prisma/client";
 import { prisma } from "../lib/database";
 import { toWorkoutResponse } from "../mapper/workout-mapper";
-import { CreateWorkoutRequest, WorkoutResponse, WorkoutTodayResponse } from "../model/workout-mode";
+import { CreateWorkoutRequest, WorkoutResponse, WorkoutStatisticsResponse, WorkoutTodayResponse } from "../model/workout-mode";
 import { Validation } from "../validation/validation";
 import { WorkoutValidation } from "../validation/workout-validation";
 
@@ -17,6 +18,7 @@ export class WorkoutService {
                 duration: workoutRequest.duration,
                 ytUrl: workoutRequest.ytUrl
             }
+            
         })
 
         return toWorkoutResponse(workout)
@@ -64,5 +66,29 @@ export class WorkoutService {
             workouts: workouts.map(toWorkoutResponse)
         }
     }
-    
+
+    static async getStatistics(userId: number) : Promise <WorkoutStatisticsResponse> {
+        const workouts = await prisma.workout.findMany({
+            where: {
+                userId
+            },
+            orderBy: {
+                createdAt: "asc"
+            }
+        })
+
+        if(workouts.length === 0) {
+            return {
+                totalWorkout: 0,
+                totalCalories: 0,
+                totalDuration: 0
+            }
+        }
+
+        return {
+            totalWorkout: workouts.length,
+            totalCalories: workouts.reduce((sum, w) => sum + w.calories, 0),
+            totalDuration: workouts.reduce((sum, w) => sum + w.duration, 0)
+        }
+    }    
 }

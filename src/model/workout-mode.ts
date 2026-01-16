@@ -21,3 +21,9 @@ export type WorkoutTodayResponse = {
     totalDuration: number
     workouts: WorkoutResponse[]
 }
+
+export type WorkoutStatisticsResponse = {
+    totalWorkout: number
+    totalCalories: number
+    totalDuration: number
+}

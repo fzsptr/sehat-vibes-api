@@ -1,4 +1,3 @@
-import { userInfo } from "node:os";
 import { User, Workout } from "../../generated/prisma/client";
 import { Role } from "../../generated/prisma/enums";
 import { prisma } from "../lib/database";

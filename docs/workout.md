@@ -69,6 +69,14 @@ Response Body 200 (OK) :
         "duration": 30,
         "createdAt": "2026-01-10T05:00:00.000Z",
         "ytUrl": "https//www.youtube.com"
+      },
+      {
+        "id": 1,
+        "title": "Sit Up",
+        "calories": 150,
+        "duration": 30,
+        "createdAt": "2026-01-10T05:00:00.000Z",
+        "ytUrl": "https//www.youtube.com"
       }
     ]
   }
@@ -140,14 +148,10 @@ Response Body 200 (OK) :
 ```json
 {
   "status": "success",
-  "data": {
-    "id": 1,
-    "name": "fauzi",
-    "height": 170.5,
-    "weight": 55.2,
-    "role": "USER",
-    "createdAt": "2025-12-13T10:00:00.000Z",
-    "updatedAt": "2025-12-13T11:30:00.000Z"
+  "data": { 
+    "totalWorkout": 48,
+    "totalCalories": 3000,
+    "totalDuration": 300
   }
 }
 ```
