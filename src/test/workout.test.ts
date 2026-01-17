@@ -32,7 +32,7 @@ describe('POST /workouts/history', () => {
         expect(response.body.data.duration).toBe(10)
     })
 
-    it('should be reject workouts', async() => {
+    it('should be reject workouts if validation error', async() => {
         const token = await UserTest.token()
         const response = await supertest(web)
 
@@ -171,7 +171,7 @@ describe('GET /workouts/history/weekly', () => {
         await UserTest.delete(user.id)
     })
 
-    it('should be able workouts today', async() => {
+    it('should be able workouts weekly', async() => {
         const token = await UserTest.token()
         const user = await UserTest.get()
         
@@ -205,7 +205,7 @@ describe('GET /workouts/history/weekly', () => {
         expect(response.body.data.workouts[1].duration).toBe(30)
     })
 
-    it('should be reject workouts today if unauthorized', async() => {
+    it('should be reject workouts weekly if unauthorized', async() => {
         const token = await UserTest.token()
         const user = await UserTest.get()
         
@@ -276,3 +276,51 @@ describe('GET /workouts/history/statistics', () => {
         expect(response.body.errors).toBeDefined()
     })
 })
+
+describe('GET /workouts/history/streak', () => { 
+    
+    afterEach(async () => {
+        const user = await UserTest.get()
+        await WorkoutTest.deleteByUser(user.id)
+        await UserTest.delete(user.id)
+    })
+    
+    it('should be able get workouts streak', async () => {
+        const token = await UserTest.token()
+        const user = await UserTest.get()
+        
+        await WorkoutTest.createToday(user.id)
+        await WorkoutTest.createYesteday(user.id)
+
+        const response = await supertest(web)
+        .get("/workouts/history/streak")
+        .set("Authorization", `Bearer ${token}`)
+
+        logger.debug(response.body)
+        expect(response.status).toBe(200)
+        expect(response.body.status).toBe("success")
+        expect(response.body.data.firstWorkoutDate).toBeDefined()
+        expect(response.body.data.lastWorkoutDate).toBeDefined()
+        expect(response.body.data.totalWorkoutsDays).toBe(2)
+        expect(response.body.data.currentStreak).toBe(0)
+        expect(response.body.data.longestStreak).toBe(2)
+    })
+
+    it('should be reject get workouts streak if unauthorized', async() => {
+        const token = await UserTest.token()
+        const user = await UserTest.get()
+
+        await WorkoutTest.create(user.id)
+        await WorkoutTest.create(user.id)
+        await WorkoutTest.create(user.id)
+
+        const response = await supertest(web)
+            .get("/workouts/history/statistics")
+            .set("Authorized", `Bearer token`)
+
+        logger.debug(response.body)
+        expect(response.status).toBe(401)
+        expect(response.body.status).toBe("error")
+        expect(response.body.errors).toBeDefined()
+    })
+ })

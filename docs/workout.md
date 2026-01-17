@@ -2,7 +2,7 @@
 
 ## Create Workout
 
-Endpoint: POST /auth/register
+Endpoint: POST /workout/history
 
 Request Header:
 
@@ -210,6 +210,38 @@ Response Body 200 (OK) :
         "createdAt": "2026-01-10T05:00:00.000Z"
       }
     ]
+  }
+}
+```
+
+Response Body 401 (Unauthorized):
+
+```json
+{
+  "status": "error",
+  "message": "Unauthorized"
+}
+```
+
+## Get Workout Streak
+
+Endpoint: POST /auth/register
+
+Request Header:
+
+- Authorization: Bearer <JWT_TOKEN>
+
+Response Body 200 (OK) :
+
+```json
+{
+  "status": "success",
+  "data": {
+    "firstWorkoutDate": "2026-01-8",
+    "lastWorkoutDate": "2026-01-17",
+    "totalWorkoutsDays": 12,
+    "currentStreak": 3,
+    "longestStreak": 7
   }
 }
 ```

@@ -36,3 +36,11 @@ export type WorkoutStatisticsResponse = {
     totalCalories: number
     totalDuration: number
 }
+
+export type WorkoutStreakResponse = {
+    firstWorkoutDate: string | null
+    lastWorkoutDate: string | null
+    totalWorkoutsDays: number
+    currentStreak: number
+    longestStreak: number
+}

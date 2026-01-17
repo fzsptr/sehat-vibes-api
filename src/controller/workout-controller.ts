@@ -64,4 +64,16 @@ export class WorkoutController {
             next(e)
         }
     }
+
+    static async getStreak(req: Request, res: Response, next: NextFunction) {
+        try {
+            const response = await WorkoutService.getStreak(req.user!.id)
+            res.status(200).json({
+                status: "success",
+                data: response
+            })
+        } catch(e) {
+            next(e)
+        }
+    }
 }
