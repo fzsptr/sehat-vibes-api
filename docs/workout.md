@@ -163,4 +163,62 @@ Response Body 401 (Unauthorzied):
   "status": "error",
   "message": "Unauthorized"
 }
+``` 
+
+## Get Workout Week
+
+Endpoint: GET /workouts/history/weekly
+
+Request Header:
+
+- Authorization: Bearer <JWT_TOKEN>
+
+Response Body 200 (OK) :
+
+```json
+{
+  "status": "success",
+  "data": {
+    "startDate": "2026-01-17",
+    "endDate": "2026-01-23",
+    "totalWorkout": 15,
+    "totalCalories": 1500,
+    "totalDuration": 1800,
+    "workouts": [
+      {
+        "id": 1,
+        "title": "Push Up",
+        "calories": 100,
+        "duration": 30,
+        "createdAt": "2026-01-10T05:00:00.000Z",
+        "ytUrl": "https//www.youtube.com"
+      },
+      {
+        "id": 2,
+        "title": "Sit Up",
+        "calories": 150,
+        "duration": 30,
+        "ytUrl": "https//www.youtube.com",
+        "createdAt": "2026-01-10T05:00:00.000Z"
+      },
+      {
+        "id": 3,
+        "title": "Pull Up",
+        "calories": 150,
+        "duration": 30,
+        "ytUrl": "https//www.youtube.com",
+        "createdAt": "2026-01-10T05:00:00.000Z"
+      }
+    ]
+  }
+}
+```
+
+Response Body 401 (Unauthorized):
+
+```json
+{
+  "status": "error",
+  "message": "Unauthorized"
+}
 ```

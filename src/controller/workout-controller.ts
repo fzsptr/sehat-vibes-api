@@ -41,6 +41,18 @@ export class WorkoutController {
         }
     }
 
+    static async getWeek(req: Request, res: Response, next: NextFunction) {
+        try {
+            const response = await WorkoutService.getWeek(req.user!.id)
+            res.status(200).json({
+                status: "success",
+                data: response
+            })
+        } catch(e) {
+            next(e)
+        }
+    }
+
     static async getStatistics(req: Request, res: Response, next: NextFunction) {
         try {
             const response = await WorkoutService.getStatistics(req.user!.id)

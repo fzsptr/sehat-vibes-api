@@ -1,7 +1,7 @@
 import { User } from "../../generated/prisma/client";
 import { prisma } from "../lib/database";
 import { toWorkoutResponse } from "../mapper/workout-mapper";
-import { CreateWorkoutRequest, WorkoutResponse, WorkoutStatisticsResponse, WorkoutTodayResponse } from "../model/workout-mode";
+import { CreateWorkoutRequest, WorkoutResponse, WorkoutStatisticsResponse, WorkoutTodayResponse, WorkoutWeekResponse } from "../model/workout-mode";
 import { Validation } from "../validation/validation";
 import { WorkoutValidation } from "../validation/workout-validation";
 
@@ -60,6 +60,37 @@ export class WorkoutService {
 
         return {
             date: start.toISOString().split("T")[0],
+            totalWorkout: workouts.length,
+            totalCalories: workouts.reduce((sum, w) => sum + w.calories, 0),
+            totalDuration: workouts.reduce((sum, w) => sum + w.duration, 0),
+            workouts: workouts.map(toWorkoutResponse)
+        }
+    }
+
+    static async getWeek(userId: number) : Promise <WorkoutWeekResponse> {
+        const end = new Date()
+        end.setUTCHours(23, 59, 59, 999)
+
+        const start = new Date()
+        start.setUTCDate(end.getUTCDate() - 6)
+        start.setUTCHours(0, 0, 0, 0)
+
+        const workouts = await prisma.workout.findMany({
+            where:{
+                userId,
+                createdAt: {
+                    gte: start,
+                    lte: end
+                }
+            },
+            orderBy: {
+                createdAt: "desc"
+            }
+        })
+
+        return {
+            startDate: start.toISOString().split("T")[0],
+            endDate: end.toISOString().split("T")[0],
             totalWorkout: workouts.length,
             totalCalories: workouts.reduce((sum, w) => sum + w.calories, 0),
             totalDuration: workouts.reduce((sum, w) => sum + w.duration, 0),

@@ -104,8 +104,30 @@ export class WorkoutTest {
         })
     }
 
+    static async createLastWeek(userId: number) {
+        const lastWeek = new Date()
+        lastWeek.setUTCDate(lastWeek.getUTCDate() - 6)
+        lastWeek.setUTCHours(5, 0, 0, 0)
+
+        return prisma.workout.create({
+            data: {
+                userId,
+                title: "Pull Up",
+                calories: 150,
+                duration: 30,
+                ytUrl: null,
+                createdAt: lastWeek
+            }
+        })
+    }
+
     static async createFixtures(userId: number) {
         await this.createToday(userId)
         await this.createYesteday(userId)
+    }
+
+    static async createFixturesWeekly(userId: number) {
+        await this.createToday(userId)
+        await this.createLastWeek(userId)
     }
 }

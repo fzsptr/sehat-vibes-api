@@ -22,6 +22,15 @@ export type WorkoutTodayResponse = {
     workouts: WorkoutResponse[]
 }
 
+export type WorkoutWeekResponse = {
+    startDate: string
+    endDate: string
+    totalWorkout: number
+    totalCalories: number
+    totalDuration: number
+    workouts: WorkoutResponse[]
+}
+
 export type WorkoutStatisticsResponse = {
     totalWorkout: number
     totalCalories: number
