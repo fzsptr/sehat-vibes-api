@@ -123,17 +123,11 @@ export class WorkoutService {
         }
     }
 
-    static async getStreak(userId: number) : Promise <WorkoutStreakResponse> {
+    static async getStreak(userId: number): Promise<WorkoutStreakResponse> {
         const workouts = await prisma.workout.findMany({
-            where: {
-                userId
-            },
-            select: {
-                createdAt: true
-            },
-            orderBy: {
-                createdAt: "asc"
-            }
+            where: { userId },
+            select: { createdAt: true },
+            orderBy: { createdAt: "asc" }
         })
 
         if (workouts.length === 0) {
@@ -146,41 +140,58 @@ export class WorkoutService {
             }
         }
 
-        // ambil tanggal unik
-        const days = Array.from(new Set(
-            workouts.map(w => w.createdAt.toISOString().split("T")[0])
-        ))
+        const toDateOnly = (date: Date) =>
+            new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()))
 
-        const dates = days.map(d => new Date(d))
+        // mengambil tanggal unik
+        const days = Array.from(
+            new Set(workouts.map(w => w.createdAt.toISOString().slice(0, 10)))
+        )
 
-        let longest = 1
-        let current = 1
-        let temp = 1
+        const dates = days.map(d => toDateOnly(new Date(d)))
+
+        let longestStreak = 1
+        let tempStreak = 1
 
         for (let i = 1; i < dates.length; i++) {
-            const diff = (dates[i].getTime() - dates [i - 1].getTime()) / (1000 * 60 * 60 * 24)
+            const diff =
+                (dates[i].getTime() - dates[i - 1].getTime()) / 86400000
 
             if (diff === 1) {
-                temp++
-                longest = Math.max(longest, temp)
+                tempStreak++
+                longestStreak = Math.max(longestStreak, tempStreak)
             } else {
-                temp = 1
+                tempStreak = 1
             }
         }
 
-        const today = new Date()
-        today.setUTCHours(0, 0, 0, 0)
+        const today = toDateOnly(new Date())
+        let currentStreak = 1
 
-        const lastDate = dates[dates.length - 1]
-        const diffToday = (today.getTime() - lastDate.getTime() / (1000 * 60 * 60 * 24))
-        current = diffToday === 0 || diffToday === 1 ? temp : 0
+        for (let i = dates.length - 1; i > 0; i--) {
+            const diff =
+                (dates[i].getTime() - dates[i - 1].getTime()) / 86400000
+
+            if (diff === 1) {
+                currentStreak++
+            } else {
+                break
+            }
+        }
+
+        const diffFromToday =
+            (today.getTime() - dates[dates.length - 1].getTime()) / 86400000
+
+        if (diffFromToday > 1) {
+            currentStreak = 0
+        }
 
         return {
             firstWorkoutDate: days[0],
             lastWorkoutDate: days[days.length - 1],
             totalWorkoutsDays: days.length,
-            currentStreak: current,
-            longestStreak: longest
+            currentStreak,
+            longestStreak
         }
     }
 }

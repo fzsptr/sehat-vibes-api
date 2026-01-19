@@ -292,6 +292,7 @@ describe('GET /workouts/history/streak', () => {
         await WorkoutTest.createToday(user.id)
         await WorkoutTest.createYesteday(user.id)
 
+
         const response = await supertest(web)
         .get("/workouts/history/streak")
         .set("Authorization", `Bearer ${token}`)
@@ -302,7 +303,7 @@ describe('GET /workouts/history/streak', () => {
         expect(response.body.data.firstWorkoutDate).toBeDefined()
         expect(response.body.data.lastWorkoutDate).toBeDefined()
         expect(response.body.data.totalWorkoutsDays).toBe(2)
-        expect(response.body.data.currentStreak).toBe(0)
+        expect(response.body.data.currentStreak).toBe(2)
         expect(response.body.data.longestStreak).toBe(2)
     })
 
