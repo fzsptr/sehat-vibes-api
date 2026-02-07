@@ -1,0 +1,62 @@
+version: '3.9'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql-sehat-vibes
+    restart: always
+
+    volumes:
+      - mysql_data:/var/lib/mysql
+      
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DATABASE_PASSWORD}
+      - MYSQL_DATABASE=${DATABASE_NAME}
+
+    env_file:
+      - .env.production
+
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    networks:
+      - sehat_vibes_network
+  
+  migrate:
+    image: sehat-vibes-api:1.0
+    command: npx prisma migrate deploy
+    env_file:
+      - .env.production
+    depends_on:
+      db:  
+        condition: service_healthy
+    networks:
+      - sehat_vibes_network
+
+  app:
+    build: .
+    container_name: sehat-vibes-api
+    restart: always
+
+    ports:
+      - "${APP_PORT}:3000"
+
+    env_file:
+      - .env.production
+    
+    depends_on:
+      db:
+        condition: service_healthy
+
+    networks:
+      - sehat_vibes_network
+
+volumes:
+  mysql_data:
+
+networks:
+  sehat_vibes_network:
+    driver: bridge
