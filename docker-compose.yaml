@@ -4,7 +4,7 @@ services:
   db:
     image: mysql:8.0
     container_name: mysql-sehat-vibes
-    restart: always
+    restart: no
 
     volumes:
       - mysql_data:/var/lib/mysql
@@ -39,7 +39,7 @@ services:
   app:
     build: .
     container_name: sehat-vibes-api
-    restart: always
+    restart: no
 
     ports:
       - "${APP_PORT}:3000"
